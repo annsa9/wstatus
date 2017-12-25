@@ -13,6 +13,7 @@ import { SocialSharing } from '@ionic-native/social-sharing';
 import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer';
 import { VideoEditor } from '@ionic-native/video-editor';
 import { SQLitePorter } from '@ionic-native/sqlite-porter';
+import { Http } from '@angular/http';
 import { HttpModule } from '@angular/http';
 
 import { MyApp } from './app.component';

@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title class="animated flipInX">Stories</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <div class="media-show">
+    <img [src]="mediaUrl" alt="image" *ngIf="mediaExt == 'jpg' || mediaExt == 'gif'"/>
+    <video controls="controls" preload="metadata" autoplay="autoplay" webkit-playsinline="webkit-playsinline" class="videoPlayer" *ngIf="mediaExt == 'mp4'">
+      <source [src]="mediaUrl" type="video/mp4" />
+    </video>
+  </div>
+
+  <div class="social-buttons">
+    <ion-icon name="share" (click)="shareStory()" class="social-design"></ion-icon>
+    <ion-icon name="download" (click)="downloadStory()" class="social-design"></ion-icon>
+  </div>
+  
+</ion-content>

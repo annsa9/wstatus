@@ -1,3 +1,83 @@
 page-home {
 
 }
+
+.friend-status {
+	background: $themeColor;
+    color: white;
+}
+
+.status-text {
+    font-size: 16px;
+	text-align: center;
+	padding-top: 8px;
+}
+
+.language {
+	background: $themeColor;
+	color: white;
+}
+
+.status-list {
+
+	ion-card {
+		width: 70%;
+		margin: 0 auto;
+		margin-top: 25px;
+	}
+}
+
+.status-content {
+	background: url(../assets/imgs/background.png) repeat 5% 5%;
+	background-size: cover;
+	background-attachment: fixed;
+}
+
+.scroll-content {
+	border-top: none !important;
+}
+
+.status-media {
+	height: 80px;
+}
+
+.status-data {
+	display: inline-block;
+	height: 60px;
+	width: 60px;
+	margin: 10px;
+	border: 2px solid grey;
+	padding: 3px;
+	border-radius: 100%;
+}
+
+ion-scroll[scrollX] {
+white-space: nowrap;
+}
+
+.scroll-item {
+	display: inline-block;
+	width: auto;
+}
+
+.video-thumbnail {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+
+  &:hover:before {
+    color: #eee;
+  }
+}
+
+.play-icon {
+	position:absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    font-size: 30px;
+    color: #fff;
+    opacity: .8;
+    text-shadow: 0px 0px 30px rgba(0, 0, 0, 0.5);
+}

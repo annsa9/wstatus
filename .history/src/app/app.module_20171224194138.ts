@@ -13,7 +13,7 @@ import { SocialSharing } from '@ionic-native/social-sharing';
 import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer';
 import { VideoEditor } from '@ionic-native/video-editor';
 import { SQLitePorter } from '@ionic-native/sqlite-porter';
-import { HttpModule } from '@angular/http';
+import { Http } from '@angular/http';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
@@ -30,8 +30,7 @@ import { StoryPage } from '../pages/story/story';
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
-    IonAffixModule,
-    HttpModule 
+    IonAffixModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -53,7 +52,8 @@ import { StoryPage } from '../pages/story/story';
     FileTransfer, 
     FileTransferObject,
     VideoEditor,
-    SQLitePorter
+    SQLitePorter,
+    Http
   ]
 })
 export class AppModule {}

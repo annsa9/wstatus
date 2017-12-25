@@ -14,3 +14,52 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+
+.horizontal-line{
+    border: 1px solid #DEDEDE;
+}
+
+.horizontal-line-dark{
+    border: 1px solid #505683;
+}
+
+.toolbar-background {
+    background: $themeColor;
+    color: white;
+}
+
+.bar-buttons {
+    color: white;
+
+    &:hover {
+        color: white !important;
+    }
+}
+
+.toolbar-title {
+    color: white;
+    letter-spacing: 1px;
+}
+
+ion-segment {
+    display: block;
+    white-space: nowrap;
+    font-size: 0;
+    overflow: auto;
+
+    &::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+        display: none;
+    }
+
+    ion-segment-button.segment-button {
+        display: inline-block;
+        min-width: 100px;
+        width: auto;
+    }
+}
+
+ion-segment-button {
+    color: white !important;
+}

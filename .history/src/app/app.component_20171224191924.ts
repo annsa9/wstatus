@@ -6,8 +6,6 @@ import { AdMobFree, AdMobFreeBannerConfig } from '@ionic-native/admob-free';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 import { Market } from '@ionic-native/market';
 import { SQLitePorter } from '@ionic-native/sqlite-porter';
-import { Http } from '@angular/http';
-import 'rxjs/add/operator/map';
 
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
@@ -20,12 +18,12 @@ export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
   rootPage: any = HomePage;
+
   pages: Array<{title: string, component: any}>;
-  database: SQLiteObject;
 
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, 
     private admobFree: AdMobFree, public alert: AlertController, private sqlite: SQLite,
-    private market: Market, private sqlitePorter: SQLitePorter, private http: Http) {
+    private market: Market, private sqlitePorter: SQLitePorter) {
 
     this.initializeApp();
     
@@ -119,39 +117,26 @@ export class MyApp {
       location: 'default'
     })
       .then((db: SQLiteObject) => {
-        this.database = db;
-        this.showAlert('db created');
-        this.fillDatabase();
-/*         this.database.sqlBatch(['create table if not exists w_category(cat_id INTEGER PRIMARY KEY AUTOINCREMENT,category VARCHAR(32))',
+        
+       this.showAlert('db created');
+        db.sqlBatch(['create table if not exists w_category(cat_id INTEGER PRIMARY KEY AUTOINCREMENT,category VARCHAR(32))',
           'create table if not exists w_language(lang_id INTEGER PRIMARY KEY AUTOINCREMENT,language VARCHAR(32))',
           'create table if not exists w_sub_category(sub_id INTEGER PRIMARY KEY AUTOINCREMENT,language VARCHAR(32))'])
           .then(() => {
+      //    this.showAlert('table created');
           console.log('Executed SQL');
 
-          this.insertData();
+          this.insertData(db);
           }
           )
-          .catch(e => console.log('table not created'+e)); */
+          .catch(e => console.log('table not created'+e));
       })
       .catch(e => this.showAlert('db err'+e));
 
   }
 
-  fillDatabase() {
-    this.http.get('assets/wstatus_db.sql')
-      .map(res => res.text())
-      .subscribe(sql => {
-        this.sqlitePorter.importSqlToDb(this.database, sql)
-          .then(data => {
-            this.showAlert('sql import success ' + JSON.stringify(data));
-            this.selectQuery();
-          })
-          .catch(e => this.showAlert("error" + JSON.stringify(e)));
-      });
-  }
-
-  insertData(){
-    this.database.sqlBatch(["INSERT INTO w_category(category) values('Status')",
+  insertData(db){
+    db.sqlBatch(["INSERT INTO w_category(category) values('Status')",
       "INSERT INTO w_category(category) values('Shayari')",
       "INSERT INTO w_category(category) values('Jokes')",
       "INSERT INTO w_category(category) values('Quotes')",
@@ -163,21 +148,23 @@ export class MyApp {
       "INSERT INTO w_language(language) values('भोजपुरी')",
       "INSERT INTO w_language(language) values('ਪੰਜਾਬੀ')",
       "INSERT INTO w_language(language) values('राजस्थानी')",
-      "INSERT INTO w_language(language) values('اردو')"])
+      "INSERT INTO w_language(language) values('اردو')",])
       .then(() => {
       //  this.showAlert('data inserted');
 
-        this.selectQuery();
+        this.selectQuery(db);
         this.showAlert('Executed SQL insert');
         }
         )
       .catch(e => this.showAlert('data not inserted'+e));
   }
 
-  selectQuery(){
-    this.database.executeSql('select * from w_category',[]).then((data) => {
+  selectQuery(db){
+
+    this.showAlert('inside select');
+    db.executeSql('select * from w_language',[]).then((data) => {
     let cat = [];
-    this.showAlert('inside statement '+JSON.stringify(data));
+      this.showAlert('inside statement '+JSON.stringify(data));
     if (data.rows.length > 0) {
       for (var i = 0; i < data.rows.length; i++) {
         cat.push({ category: data.rows.item(i)});

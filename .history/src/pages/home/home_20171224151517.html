@@ -21,8 +21,8 @@
         <span style="margin-left: 5px">*See status in your whatsapp before downloading</span>
       </div>
             
-      <ion-segment *ngIf="allComplete">
-        <div *ngFor="let item of statuses" class="scroll-item">
+      <ion-segment>
+        <div *ngFor="let item of statuses" class="scroll-item" *ngIf="allComplete">
         <div *ngIf="item.isFile">
           <img [src]="item.nativeURL" alt="image" class="status-data" (click)="setMedia(item.nativeURL, item.name, item.extension)" 
           *ngIf="item.extension == 'jpg' || item.extension == 'gif'"/>
@@ -36,7 +36,7 @@
           </div>
 
         </div>
-        </div>
+      </div>
       </ion-segment>
 
   </div>

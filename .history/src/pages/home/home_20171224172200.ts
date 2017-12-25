@@ -46,14 +46,11 @@ export class HomePage {
             this.count++;
           }
         }
-
-        setTimeout(()=> {
-          this.showAlert(this.count + " " + (len - 1));
-          this.allComplete = true;
-          // this.showAlert('all complete');
-          this.statuses = this.entries;
-          console.log('status fetched');
-        }, 4000);
+        this.showAlert(this.count+" "+(len - 1));
+        this.allComplete = true;
+        // this.showAlert('all complete');
+        this.statuses = this.entries;
+        console.log('status fetched');
       })
       .catch(e => console.log('status not fetched' + JSON.stringify(e) ));
   }
@@ -108,7 +105,7 @@ export class HomePage {
       outputFileName: fileName
     }).then(
       thumbnail => {
-        // this.showAlert('success' + key);
+         this.showAlert('success' + key);
          this.entries[key].nativeURLvid = thumbnail;
          this.count++;
         },

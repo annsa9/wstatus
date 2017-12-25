@@ -5,10 +5,27 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-content>
+  <ion-content class="outer-content">
     <ion-list>
       <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
         {{p.title}}
+      </button>
+    </ion-list>
+
+    <div class="horizontal-line"></div>
+
+    <ion-list margin-top>
+      <button menuClose ion-item>
+        Favourites
+      </button>
+      <button menuClose ion-item>
+        Share
+      </button>
+      <button menuClose ion-item (click)="openApp('com.whatsapp')">
+        Rate
+      </button>
+      <button menuClose ion-item (click)="exit()">
+        Exit
       </button>
     </ion-list>
   </ion-content>

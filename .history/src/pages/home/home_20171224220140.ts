@@ -53,7 +53,7 @@ export class HomePage {
           // this.showAlert('all complete');
           this.statuses = this.entries;
           console.log('status fetched');
-        }, 4000);
+        }, 3000);
       })
       .catch(e => console.log('status not fetched' + JSON.stringify(e) ));
   }

@@ -163,7 +163,7 @@ export class MyApp {
       "INSERT INTO w_language(language) values('भोजपुरी')",
       "INSERT INTO w_language(language) values('ਪੰਜਾਬੀ')",
       "INSERT INTO w_language(language) values('राजस्थानी')",
-      "INSERT INTO w_language(language) values('اردو')"])
+      "INSERT INTO w_language(language) values('اردو')",])
       .then(() => {
       //  this.showAlert('data inserted');
 

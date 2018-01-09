@@ -16,8 +16,8 @@
   </div>
 
   <div class="social-buttons">
-    <ion-icon name="share" (click)="shareStory()" class="social-design"></ion-icon>
-    <ion-icon name="download" (click)="downloadStory()" class="social-design"></ion-icon>
+    <ion-icon name="share" (click)="shareStory()" class="social-design" (press)="pressEvent($event, 'share')"></ion-icon>
+    <ion-icon name="download" (click)="downloadStory()" class="social-design" (press)="pressEvent($event, 'download')"></ion-icon>
   </div>
   
 </ion-content>

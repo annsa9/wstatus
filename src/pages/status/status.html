@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title class="animated flipInX">Statuses</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content #content class="has-header">
+
+  <ion-content class="status-content">
+    <div class="status-list">
+      
+      <ion-list *ngIf="statuses.length">
+        <ion-card *ngFor="let s of statuses" class="animated flipInX" (click)="showStatus(s)" (press)="pressEvent($event)">
+          <ion-card-content>
+             {{s.content_text}}
+          </ion-card-content>
+        </ion-card>
+      </ion-list>
+      
+    </div>
+  </ion-content>
+  
+</ion-content>

@@ -2,15 +2,18 @@ import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform, AlertController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-import { AdMobFree, AdMobFreeBannerConfig } from '@ionic-native/admob-free';
-import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 import { Market } from '@ionic-native/market';
-import { SQLitePorter } from '@ionic-native/sqlite-porter';
-import { Http } from '@angular/http';
-import 'rxjs/add/operator/map';
+import { File } from '@ionic-native/file';
+import { Device } from '@ionic-native/device';
+import { Ads } from "../services/ads";
+import { AppUpdate } from '@ionic-native/app-update';
+import { SocialSharing } from '@ionic-native/social-sharing';
 
 import { HomePage } from '../pages/home/home';
-import { ListPage } from '../pages/list/list';
+import { OtherPage } from '../pages/other/other';
+
+declare var FacebookAds: any;
+declare var MoPub: any;
 
 @Component({
   templateUrl: 'app.html'
@@ -20,74 +23,76 @@ export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
   rootPage: any = HomePage;
-  pages: Array<{title: string, component: any}>;
-  database: SQLiteObject;
+  pages: Array<{ title: string, component: any, pageValue: number}>;
+  start: boolean;
 
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, 
-    private admobFree: AdMobFree, public alert: AlertController, private sqlite: SQLite,
-    private market: Market, private sqlitePorter: SQLitePorter, private http: Http) {
+    public alert: AlertController, public fileNavigator: File, private ads: Ads, private socialSharing: SocialSharing,
+    private market: Market, private device: Device, private appUpdate: AppUpdate) {
 
     this.initializeApp();
     
     // used for an example of ngFor and navigation
     this.pages = [
-      { title: 'Status', component: HomePage },
-      { title: 'Shayari', component: ListPage },
-      { title: 'Jokes', component: null },
-      { title: 'Quotes', component: null },
-      { title: 'Group Links', component: null }
+      { title: 'Status', component: HomePage, pageValue: 1 },
+      { title: 'Shayari', component: OtherPage, pageValue: 2 },
+      { title: 'Jokes', component: OtherPage, pageValue: 3 },
+      { title: 'Quotes', component: OtherPage, pageValue: 5 },
+      { title: 'Group Links', component: OtherPage, pageValue: 4 }
     ];
 
+  }
+
+  deletePreviousThumbnailFiles() {
+    this.fileNavigator.removeRecursively(this.fileNavigator.externalApplicationStorageDirectory + 'files/files/', 'videos').
+      then((result) => {
+        console.log('Directory deleted' + JSON.stringify(result));
+      }).
+      catch((err) => {
+        console.log('Directory not deleted' + JSON.stringify(err));
+      });
   }
 
   initializeApp() {
     this.platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
+      console.log('Device UUID is: ' + this.device.uuid);
+
+      // check if latest app is available
+      this.checkLatestApp();
+
+      // deleting video thumbnail files from cache
+      this.deletePreviousThumbnailFiles();
+
+      // Advertisement network events
+      this.ads.registerAdEvents();
+      
       this.statusBar.styleDefault();
       this.splashScreen.hide();
 
-      // Make DB
-      this.createDbTable();
+    });
+  }
 
-      // To show banner ad
-      this.showAdmobBannerAds();
-
-      //App exit event
-      // this.platform.pause.subscribe(() => {
-      //   this.exit();
-      //  }
-      // );
-
-      // to know which platform
-      // if (this.platform.is('android')) {
-      //   this.showAlert('on android');
-      // } else {
-      //   console.log('other platform');
-      // }
+  checkLatestApp() {
+    // to auto update app
+    const updateUrl = 'https://drive.google.com/uc?export=download&id=1FEQhLC1FvVHsIh54MjlpnB2DqNy46d9c';
+    this.appUpdate.checkAppUpdate(updateUrl).then((result) => {
+      console.log("app update result" + JSON.stringify(result));
+    }).catch((error) => {
+      console.log("app update error" + JSON.stringify(error));
     });
   }
 
   openPage(page) {
     // Reset the content nav to have just this page
     // we wouldn't want the back button to show in this scenario
-    this.nav.setRoot(page.component);
-  }
+    //  this.nav.setRoot(page.component);
 
-  showAdmobBannerAds(){
-    const bannerConfig: AdMobFreeBannerConfig = {
-        id: 'ca-app-pub-6426024580351118/1952160010',
-        isTesting: true,
-        autoShow: true
-    };
-    this.admobFree.banner.config(bannerConfig);
-
-    this.admobFree.banner.prepare()
-    .then(() => {
-        // banner Ad is ready
-        // if we set autoShow to false, then we will need to call the show method here
-    })
-    .catch(e => console.log(e));    
+    this.nav.push(page.component, {
+      pageTitle: page.title,
+      pageValue: page.pageValue
+    });
   }
 
   exit() {
@@ -95,11 +100,16 @@ export class MyApp {
       title: 'Do you want to exit?',
       buttons: [{
         text: "Rate App",
-          handler: () => { this.openApp('com.whatsapp') }
+        handler: () => { this.openApp('io.ionic.whatsappkhajana') }
       },
       {
         text: "exit",
-        handler: () => { this.exitApp() }
+        handler: () => { 
+          this.ads.showInterstitialAdMob();
+          setTimeout(()=> {
+            this.exitApp();
+          }, 1000);
+         }
       }]
     })
     alert.present();
@@ -113,81 +123,12 @@ export class MyApp {
     this.market.open(name);
   }
 
-  createDbTable(){
-    this.sqlite.create({
-      name: 'wstatus.db',
-      location: 'default'
-    })
-      .then((db: SQLiteObject) => {
-        this.database = db;
-        this.showAlert('db created');
-        this.fillDatabase();
-/*         this.database.sqlBatch(['create table if not exists w_category(cat_id INTEGER PRIMARY KEY AUTOINCREMENT,category VARCHAR(32))',
-          'create table if not exists w_language(lang_id INTEGER PRIMARY KEY AUTOINCREMENT,language VARCHAR(32))',
-          'create table if not exists w_sub_category(sub_id INTEGER PRIMARY KEY AUTOINCREMENT,language VARCHAR(32))'])
-          .then(() => {
-          console.log('Executed SQL');
-
-          this.insertData();
-          }
-          )
-          .catch(e => console.log('table not created'+e)); */
-      })
-      .catch(e => this.showAlert('db err'+e));
-
-  }
-
-  fillDatabase() {
-    this.http.get('assets/wstatus_db.sql')
-      .map(res => res.text())
-      .subscribe(sql => {
-        this.sqlitePorter.importSqlToDb(this.database, sql)
-          .then(data => {
-            this.showAlert('sql import success ' + JSON.stringify(data));
-            this.selectQuery();
-          })
-          .catch(e => this.showAlert("error" + JSON.stringify(e)));
-      });
-  }
-
-  insertData(){
-    this.database.sqlBatch(["INSERT INTO w_category(category) values('Status')",
-      "INSERT INTO w_category(category) values('Shayari')",
-      "INSERT INTO w_category(category) values('Jokes')",
-      "INSERT INTO w_category(category) values('Quotes')",
-      "INSERT INTO w_category(category) values('Group Links')",
-      "INSERT INTO w_language(language) values('Hindi')",
-      "INSERT INTO w_language(language) values('हिंदी')",
-      "INSERT INTO w_language(language) values('मराठी')",
-      "INSERT INTO w_language(language) values('தமிழ்')",
-      "INSERT INTO w_language(language) values('भोजपुरी')",
-      "INSERT INTO w_language(language) values('ਪੰਜਾਬੀ')",
-      "INSERT INTO w_language(language) values('राजस्थानी')",
-      "INSERT INTO w_language(language) values('اردو')"])
-      .then(() => {
-      //  this.showAlert('data inserted');
-
-        this.selectQuery();
-        this.showAlert('Executed SQL insert');
-        }
-        )
-      .catch(e => this.showAlert('data not inserted'+e));
-  }
-
-  selectQuery(){
-    this.database.executeSql('select * from w_category',[]).then((data) => {
-    let cat = [];
-    this.showAlert('inside statement '+JSON.stringify(data));
-    if (data.rows.length > 0) {
-      for (var i = 0; i < data.rows.length; i++) {
-        cat.push({ category: data.rows.item(i)});
-
-          console.log('Executed SQL');
-      }
-      this.showAlert('data view' + JSON.stringify(cat));
-    }
-   })
-      .catch(e => this.showAlert('data not selected'+e)); 
+  shareApp(text) {
+    this.socialSharing.share(text, '', '', '').then(() => {
+      console.log("suceesfully shared");
+    }).catch((e) => {
+      console.log("error while sharing" + e);
+    });
   }
 
   showAlert(message) {
@@ -198,5 +139,4 @@ export class MyApp {
     });
     alert.present();
   }
-
 }

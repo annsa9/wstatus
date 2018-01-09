@@ -4,7 +4,8 @@ page-home {
 
 .friend-status {
 	background: $themeColor;
-    color: white;
+	color: white;
+	height: 110px;
 }
 
 .status-text {
@@ -28,7 +29,7 @@ page-home {
 }
 
 .status-content {
-	background: url(../assets/imgs/background.png) repeat 5% 5%;
+	background: url(../assets/imgs/background.jpg) repeat 5% 5%;
 	background-size: cover;
 	background-attachment: fixed;
 }
@@ -80,4 +81,20 @@ white-space: nowrap;
     color: #fff;
     opacity: .8;
     text-shadow: 0px 0px 30px rgba(0, 0, 0, 0.5);
+}
+
+.language-name {
+	font-size: 15px !important;
+}
+
+.sub-category {
+	text-align: center;
+	font-size: 15px;
+}
+
+.loader-data {
+	height: 160px;
+	width: 160px;
+	margin: 0 auto;
+	margin-top: 50px;
 }

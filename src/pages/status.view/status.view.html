@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title class="animated flipInX">Status</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content #content class="has-header">
+
+  <ion-content class="status-content">
+    <div class="status-list status-view">
+
+      <ion-card class="animated flipInX">
+        <ion-card-content>
+          <div class="status-view-text">
+            {{status.content_text}}
+          </div>
+          <div class="status-buttons">
+            <ion-icon name="copy" (click)="copyStatus(status.content_text)" class="status-social"></ion-icon>
+            <span class="status-space"></span>
+            <ion-icon name="share" (click)="shareStatus(status.content_text)" class="status-social"></ion-icon>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+    </div>
+  </ion-content>
+  
+</ion-content>

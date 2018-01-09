@@ -1,11 +1,12 @@
 <ion-menu [content]="content">
   <ion-header>
     <ion-toolbar>
-      <ion-title>Menu</ion-title>
+      <ion-title>Khajana</ion-title>
     </ion-toolbar>
   </ion-header>
 
   <ion-content class="outer-content">
+
     <ion-list>
       <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
         {{p.title}}
@@ -15,13 +16,10 @@
     <div class="horizontal-line"></div>
 
     <ion-list margin-top>
-      <button menuClose ion-item>
-        Favourites
+      <button menuClose ion-item (click)="shareApp('https://play.google.com/store/apps/details?id=io.ionic.whatsappkhajana')">
+        Share App
       </button>
-      <button menuClose ion-item>
-        Share
-      </button>
-      <button menuClose ion-item (click)="openApp('com.whatsapp')">
+      <button menuClose ion-item (click)="openApp('io.ionic.whatsappkhajana')">
         Rate
       </button>
       <button menuClose ion-item (click)="exit()">

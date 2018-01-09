@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title class="animated flipInX">{{pageTitle}}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content #content class="has-header">
+
+  <ion-content class="status-content">
+    <div class="status-list">
+      
+      <ion-list *ngIf="others.length" [ngSwitch]="pageValue">
+        <ion-card *ngFor="let o of others" class="animated flipInX" (click)="showOtherView(o)" (press)="pressEvent($event)">
+          <ion-card-content *ngSwitchCase="2">
+             {{o.shayari}}
+          </ion-card-content>
+          <ion-card-content *ngSwitchCase="3">
+            {{o.jokes}}
+          </ion-card-content>
+          <ion-card-content *ngSwitchCase="4">
+            {{o.group_name}}
+          </ion-card-content>
+          <ion-card-content *ngSwitchCase="5">
+            {{o.quotes}}
+          </ion-card-content>
+        </ion-card>
+      </ion-list>
+      
+    </div>
+  </ion-content>
+  
+</ion-content>

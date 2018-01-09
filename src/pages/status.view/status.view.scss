@@ -1,16 +1,14 @@
-.media-show {
- width: 100%;
- text-align: center;
- margin: 0 auto;
+.status-view {
+    top: 10%;
+    position: relative;
 }
 
-.social-buttons {
-	margin-top:15px;
-	text-align: center;
+.status-view-text {
+    font-size: 20px;
 }
 
-.social-design {
-	width: 40px;
+.status-social {
+    width: 40px;
     height: 40px;
     border-radius: 50%;
     line-height: 40px;
@@ -22,3 +20,9 @@
     margin-right: 10px;
     margin-left: 10px;
 }
+
+.status-buttons {
+    margin-top:15px;
+    text-align: center;
+}
+

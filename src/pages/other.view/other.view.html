@@ -1,0 +1,70 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title class="animated flipInX">{{pageTitle}}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content #content class="has-header">
+
+  <ion-content class="status-content">
+    <div class="status-list status-view">
+
+      <ion-card class="animated flipInX" [ngSwitch]="pageValue">
+        <ion-card-content *ngSwitchCase="2">
+          <div class="status-view-text">
+            {{other.shayari}}
+          </div>
+          <div class="status-buttons">
+            <ion-icon name="copy" (click)="copyOther(other.shayari)" class="status-social"></ion-icon>
+            <span class="status-space"></span>
+            <ion-icon name="share" (click)="shareOther(other.shayari)" class="status-social"></ion-icon>
+          </div>
+        </ion-card-content>
+
+        <ion-card-content *ngSwitchCase="3">
+          <div class="status-view-text">
+            {{other.jokes}}
+          </div>
+          <div class="status-buttons">
+            <ion-icon name="copy" (click)="copyOther(other.jokes)" class="status-social"></ion-icon>
+            <span class="status-space"></span>
+            <ion-icon name="share" (click)="shareOther(other.jokes)" class="status-social"></ion-icon>
+          </div>
+        </ion-card-content>
+
+        <ion-card-content *ngSwitchCase="4">
+          <div class="status-view-text">
+            <a [href]="other.group_url" target="_system">
+               {{other.group_url}}
+            </a>
+          </div>
+          <div class="group-warning">
+            *If a group has reached max user limit, you can not join.
+          </div>
+          <div class="status-buttons">
+            <ion-icon name="copy" (click)="copyOther(other.group_url)" class="status-social"></ion-icon>
+            <span class="status-space"></span>
+            <ion-icon name="share" (click)="shareOther(other.group_url)" class="status-social"></ion-icon>
+          </div>
+        </ion-card-content>
+
+        <ion-card-content *ngSwitchCase="5">
+          <div class="status-view-text">
+            {{other.quotes}}
+          </div>
+          <div class="status-buttons">
+            <ion-icon name="copy" (click)="copyOther(other.quotes)" class="status-social"></ion-icon>
+            <span class="status-space"></span>
+            <ion-icon name="share" (click)="shareOther(other.quotes)" class="status-social"></ion-icon>
+          </div>
+        </ion-card-content>
+
+      </ion-card>
+
+    </div>
+  </ion-content>
+  
+</ion-content>

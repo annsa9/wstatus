@@ -1,10 +1,13 @@
-import { Component } from '@angular/core';
-import { NavController, Platform, AlertController } from 'ionic-angular';
+import { Component, ViewChild } from '@angular/core';
+import { NavController, Platform, AlertController, Events } from 'ionic-angular';
 import { File } from '@ionic-native/file';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
 import { VideoEditor } from '@ionic-native/video-editor';
 
 import { StoryPage } from '../story/story';
+import { StatusPage } from '../status/status';
+import { Database } from "../../services/database";
+import { Ads } from "../../services/ads";
 
 @Component({
   selector: 'page-home',
@@ -12,23 +15,42 @@ import { StoryPage } from '../story/story';
 })
 
 export class HomePage {
-  language: string = "hindi";
+
+  languageId: number;
   androidPermission: boolean;
+  statusLoad: boolean;
   entries: any;
   statuses: any = [];
   nameArray: any = [];
-  allComplete: boolean = false;
-  count: number = 0;
+  videoEntries: any = [];
+  langs: any = [];
+  subCats: any = [];
   
   constructor(public navCtrl: NavController, public platform: Platform, public fileNavigator: File, 
-    public alert: AlertController, private androidPermissions: AndroidPermissions,
-    private videoEditor: VideoEditor) {
-    const MEDIA_DIRECTORY = 'WhatsApp/Media/.Statuses';
+    public alert: AlertController, private androidPermissions: AndroidPermissions, private ads: Ads,
+    private videoEditor: VideoEditor, private database: Database, public events: Events) {
 
- //   this.showAlert(this.fileNavigator.externalApplicationStorageDirectory);
     this.platform.ready().then(() => {
+
+      // check android device permission
       this.checkPermission();
-      this.listDir('file:///storage/emulated/0/', MEDIA_DIRECTORY);
+
+      // first time when user installs app
+      events.subscribe('database_imported', () => {
+        this.getLanguages();
+      });
+
+      // Second time when user opens app, second load
+      if(this.database.isDatabaseDataExist) {
+          this.getLanguages();
+      } else { // Second time first load
+        events.subscribe('database_exists', () => {
+          this.getLanguages();
+        });
+      }
+
+      this.ads.showAdmobBannerAdMob();
+
     });
   }
 
@@ -41,19 +63,15 @@ export class HomePage {
           Object.assign(this.entries[i], { extension: fileExtension });
 
           if (this.entries[i].extension == 'mp4') {
-            this.createThumbnailG(this.entries, i, len);
+            this.videoEntries.push(this.entries[i]);
           } else {
-            this.count++;
+            this.statuses.push(this.entries[i]);            
           }
         }
 
-        setTimeout(()=> {
-          this.showAlert(this.count + " " + (len - 1));
-          this.allComplete = true;
-          // this.showAlert('all complete');
-          this.statuses = this.entries;
-          console.log('status fetched');
-        }, 4000);
+      //  this.checkDevicePermission();
+        this.statusLoad = true;
+        this.createThumbnailG(this.videoEntries, 0);
       })
       .catch(e => console.log('status not fetched' + JSON.stringify(e) ));
   }
@@ -69,11 +87,17 @@ export class HomePage {
       (result) => {
         if (result.hasPermission) {
           this.androidPermission = true;
+          let MEDIA_DIRECTORY = 'WhatsApp/Media/.Statuses';
+          this.listDir('file:///storage/emulated/0/', MEDIA_DIRECTORY); 
         } else {
           this.androidPermission = false;
+          this.requestPermission();
         }
       },
-      err => console.log(err)
+      err => {
+        this.requestPermission();
+        console.log(err);
+      }
     );
   }
 
@@ -83,13 +107,37 @@ export class HomePage {
       (result) => {
         if (result.hasPermission) {
           this.androidPermission = true;
+          let MEDIA_DIRECTORY = 'WhatsApp/Media/.Statuses';
+          this.listDir('file:///storage/emulated/0/', MEDIA_DIRECTORY);      
         } else {
+          this.statusLoad = true;          
           this.androidPermission = false;
         }
-        this.listDir('file:///storage/emulated/0/', 'WhatsApp/Media/.Statuses');
       },
-      err => console.log('error in requesting permssion')
+      err => {
+        console.log('error in requesting permssion');
+        this.checkPermission();
+        this.statusLoad = true;
+      }
     );
+  }
+
+  checkDevicePermission() {
+    this.androidPermissions.requestPermissions([this.androidPermissions.PERMISSION.READ_EXTERNAL_STORAGE,
+    this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE]).then(
+      (result) => {
+        if (result.hasPermission) {
+          this.androidPermission = true;
+        } else {
+          this.statusLoad = true;
+          this.androidPermission = false;
+        }
+      },
+      err => {
+        console.log('error in requesting permssion');
+        this.statusLoad = true;
+      }
+      );
   }
 
   setMedia(url, fileName, extension) {
@@ -100,22 +148,67 @@ export class HomePage {
     });
   }
 
-  createThumbnailG(entries, key, length) {
-    let remoteFileUrl = entries[key].nativeURL;
-    let fileName = entries[key].name;
-    this.videoEditor.createThumbnail({
-      fileUri: remoteFileUrl,
-      outputFileName: fileName
-    }).then(
-      thumbnail => {
-        // this.showAlert('success' + key);
-         this.entries[key].nativeURLvid = thumbnail;
-         this.count++;
-        },
-      error => { 
-        this.showAlert('error' + error);
+  showStatuses(subCategoryId) {
+    this.navCtrl.push(StatusPage, {
+      subCategoryId: subCategoryId
+    });
+  }
+
+  createThumbnailG(videoEntries, i) {
+      let len = videoEntries.length;
+
+      if (len) {
+        let remoteFileUrl = videoEntries[i].nativeURL;
+        let fileName = videoEntries[i].name;
+
+        this.videoEditor.createThumbnail({
+          fileUri: remoteFileUrl,
+          outputFileName: fileName,
+          atTime: 1, // optional, location in the video to create the thumbnail (in seconds)
+          width: 100, // optional, width of the thumbnail
+          height: 100, // optional, height of the thumbnail
+          quality: 80 // optional, quality of the thumbnail (between 1 and 100)          
+        }).then(
+          thumbnail => {
+              this.videoEntries[i].nativeURLvideo = thumbnail;
+              // this.showAlert("ap"+i+JSON.stringify(this.videoEntries[i]));
+              this.statuses.push(this.videoEntries[i]);
+              if (i == len-1) {
+                // Array.prototype.push.apply(this.statuses, this.videoEntries);
+              } else {
+                i++;
+                this.createThumbnailG(this.videoEntries, i);
+               // this.events.publish('file_done', i);
+              }
+          },
+          error => {
+           // this.showAlert('error' + error);
+          }
+          );
       }
-    );
+  }
+
+  getLanguages() {
+    this.database.getLanguages().then((result) => {
+      this.langs = result;
+      this.languageId = 1;
+      this.getSubCategories(this.languageId);
+    }, (error) => {
+     // this.showAlert("ERROR: "+ error);
+    });
+  }
+
+  langChanged(id) {
+    this.languageId = id;
+    this.getSubCategories(this.languageId);
+  }
+
+  getSubCategories(languageId) {
+    this.database.getSubCategories(languageId).then((result) => {
+      this.subCats = result;
+    }, (error) => {
+    //  this.showAlert("ERROR: " + error);
+    });
   }
 
   showAlert(message) {

@@ -12,16 +12,16 @@
   <div class="friend-status">
     <div class="status-text">दोस्तों के स्टेटस करे डाउनलोड</div>
 
-      <div *ngIf="!androidPermission">
-        <span style="margin-left: 5px">*You have to enable permission</span>
-        <button ion-button small (click)="requestPermission()" style="margin-top: -5px">Enable</button>
+      <div *ngIf="!androidPermission && statusLoad" style="text-align: center">
+        <button ion-button small (click)="requestPermission()">Enable</button>        
+        <div>*Please give permission. We do not access/share your data.</div>
       </div>
 
-      <div *ngIf="!statuses.length && androidPermission">
+      <div *ngIf="!statuses.length && androidPermission && statusLoad">
         <span style="margin-left: 5px">*See status in your whatsapp before downloading</span>
       </div>
             
-      <ion-segment *ngIf="allComplete">
+      <ion-segment *ngIf="statuses.length">
         <div *ngFor="let item of statuses" class="scroll-item">
         <div *ngIf="item.isFile">
           <img [src]="item.nativeURL" alt="image" class="status-data" (click)="setMedia(item.nativeURL, item.name, item.extension)" 
@@ -29,10 +29,9 @@
           
           
           <div class="video-thumbnail" *ngIf="item.extension == 'mp4'">
-            <img src={{item.nativeURLvid}} alt="image" class="status-data" 
+            <img [src]="item.nativeURLvideo" alt="image" class="status-data" 
             (click)="setMedia(item.nativeURL, item.name, item.extension)"/>
             <ion-icon name="play" class="play-icon" (click)="setMedia(item.nativeURL, item.name, item.extension)"></ion-icon>
-             {{item.nativeURLvid}}
           </div>
 
         </div>
@@ -42,129 +41,32 @@
   </div>
 
   <div class="horizontal-line-dark"></div>
-  
+
   <div ion-affix [content]="content" class="language">
-    <ion-segment [(ngModel)]="language">
-      <ion-segment-button value="hindi">
-          हिंदी
-      </ion-segment-button>
-      <ion-segment-button value="english">
-        English
-      </ion-segment-button>
-      <ion-segment-button value="marathi">
-          मराठी
-      </ion-segment-button>
-      <ion-segment-button value="tamil">
-          தமிழ்
-      </ion-segment-button>
-      <ion-segment-button value="bhojpuri">
-          भोजपुरी
-      </ion-segment-button>
-      <ion-segment-button value="punjabi">
-          ਪੰਜਾਬੀ
-      </ion-segment-button>
-      <ion-segment-button value="rajsthani">
-          राजस्थानी
-      </ion-segment-button>
-      <ion-segment-button value="urdu">
-          اردو
+    <ion-segment (ngModel)="language_id" *ngIf="langs.length && subCats.length">
+      <ion-segment-button *ngFor="let l of langs" value="{{l.lang_id}}" (click)="langChanged(l.lang_id)" 
+      class="language-name">
+          {{l.lang_type}}
       </ion-segment-button>
     </ion-segment>
   </div>
 
 
   <ion-content class="status-content">
-
-    <!-- <ion-refresher (ionRefresh)="doRefresh($event)">
-      <ion-refresher-content
-        refreshingSpinner="circles"
-        refreshingText="refreshing" >
-      </ion-refresher-content>
-    </ion-refresher> -->
+    <div class="status-list">
       
-    <div [ngSwitch]="language" class="status-list">
-      <ion-list *ngSwitchCase="'hindi'">
-        <ion-card>
-          <ion-card-content>
-             Romantic
-          </ion-card-content>
-        </ion-card>
-        <ion-card>
-          <ion-card-content>
-             Happy
-          </ion-card-content>
-        </ion-card>
-        <ion-card>
-          <ion-card-content>
-             Sad
-          </ion-card-content>
-        </ion-card>
-        <ion-card>
-          <ion-card-content>
-             Break-up
-          </ion-card-content>
-        </ion-card>
-        <ion-card>
-          <ion-card-content>
-             Sarcasm
-          </ion-card-content>
-        </ion-card>
-        <ion-card>
-          <ion-card-content>
-            Ruby
-          </ion-card-content>
-        </ion-card>
-        <ion-card>
-          <ion-card-content>
-            Ruby
-          </ion-card-content>
-        </ion-card>
-        <ion-card>
-          <ion-card-content>
-            Ruby
-          </ion-card-content>
-        </ion-card>
-        <ion-card>
-          <ion-card-content>
-            Ruby
-          </ion-card-content>
-        </ion-card>
-        <ion-card>
-          <ion-card-content>
-            Ruby
-          </ion-card-content>
-        </ion-card>
-        <ion-card>
-          <ion-card-content>
-            Ruby
-          </ion-card-content>
-        </ion-card>
-        <ion-card>
-          <ion-card-content>
-            Ruby
-          </ion-card-content>
-        </ion-card>
-        <ion-card>
-          <ion-card-content>
-            Ruby
+      <div *ngIf="!subCats.length" class="loader-data">
+          <img src="assets/imgs/loader.gif" alt="image" />
+      </div>
+
+      <ion-list *ngIf="subCats.length">
+        <ion-card *ngFor="let s of subCats" class="animated flipInX" (click)="showStatuses(s.sub_cat_id)">
+          <ion-card-content class="sub-category">
+             {{s.sub_cat_name}}
           </ion-card-content>
         </ion-card>
       </ion-list>
-
-      <ion-list *ngSwitchCase="'english'">
-          <ion-item>
-            <ion-thumbnail item-start>
-              <img src="../assets/imgs/happy.gif">
-            </ion-thumbnail>
-            <h2>Ruby</h2>
-          </ion-item>
-          <ion-item>
-            <ion-thumbnail item-start>
-              <img src="assets/img/thumbnail-puppy-2.jpg">
-            </ion-thumbnail>
-            <h2>Oscar</h2>
-          </ion-item>
-        </ion-list>
+      
     </div>
   </ion-content>
   

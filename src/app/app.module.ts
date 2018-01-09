@@ -14,18 +14,30 @@ import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer';
 import { VideoEditor } from '@ionic-native/video-editor';
 import { SQLitePorter } from '@ionic-native/sqlite-porter';
 import { HttpModule } from '@angular/http';
+import { Clipboard } from '@ionic-native/clipboard';
+import { Toast } from '@ionic-native/toast';
+import { Device } from '@ionic-native/device';
+import { AppUpdate } from '@ionic-native/app-update';
 
+import { Database } from "../services/database";
+import { Ads } from "../services/ads";
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
-import { ListPage } from '../pages/list/list';
 import { StoryPage } from '../pages/story/story';
+import { StatusPage } from '../pages/status/status';
+import { StatusViewPage } from '../pages/status.view/status.view';
+import { OtherPage } from '../pages/other/other';
+import { OtherViewPage } from '../pages/other.view/other.view';
 
 @NgModule({
   declarations: [
     MyApp,
     HomePage,
-    ListPage,
-    StoryPage
+    StoryPage,
+    StatusPage,
+    StatusViewPage,
+    OtherPage,
+    OtherViewPage
   ],
   imports: [
     BrowserModule,
@@ -37,8 +49,11 @@ import { StoryPage } from '../pages/story/story';
   entryComponents: [
     MyApp,
     HomePage,
-    ListPage,
-    StoryPage
+    StoryPage,
+    StatusPage,
+    StatusViewPage,
+    OtherPage,
+    OtherViewPage
   ],
   providers: [
     StatusBar,
@@ -53,7 +68,13 @@ import { StoryPage } from '../pages/story/story';
     FileTransfer, 
     FileTransferObject,
     VideoEditor,
-    SQLitePorter
+    SQLitePorter,
+    Database,
+    Clipboard,
+    Toast,
+    Ads,
+    Device,
+    AppUpdate
   ]
 })
 export class AppModule {}

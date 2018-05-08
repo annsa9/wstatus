@@ -100,7 +100,7 @@ export class MyApp {
       title: 'Do you want to exit?',
       buttons: [{
         text: "Rate App",
-        handler: () => { this.openApp('io.ionic.whatsappkhajana') }
+        handler: () => { this.openApp('io.ionic.wkhajana') }
       },
       {
         text: "exit",

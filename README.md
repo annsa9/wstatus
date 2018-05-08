@@ -5,7 +5,7 @@
 
 ## Live app on play store
 
-[Whatsapp Khazana](https://play.google.com/store/apps/details?id=io.ionic.whatsappkhajana)
+[Whatsapp Khazana](https://play.google.com/store/apps/details?id=io.ionic.wkhajana)
 
 ## Prerequisite Technologies
 

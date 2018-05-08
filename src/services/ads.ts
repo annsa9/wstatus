@@ -5,9 +5,10 @@ import { AdMobFree, AdMobFreeBannerConfig, AdMobFreeRewardVideoConfig, AdMobFree
 @Injectable()
 export class Ads {
 
-    bannerAdMobId: string = 'ca-app-pub-3438993091130285/1503906177';
-    interstitialAdMobId: string = 'ca-app-pub-3438993091130285/5395049721';
-    videoAdMobId: string = 'ca-app-pub-3438993091130285/9350730312';
+    // Use your own google admob Ids
+    bannerAdMobId: string = '1234';
+    interstitialAdMobId: string = '1234';
+    videoAdMobId: string = '1234';
 
     public constructor(public alert: AlertController, private admobFree: AdMobFree) {
  

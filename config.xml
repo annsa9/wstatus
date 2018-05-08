@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget android-versionCode="1001" id="io.ionic.whatsappkhajana" version="1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Whatsapp Khazana</name>
-    <description>Whatsapp status khazana</description>
+<widget android-versionCode="1002" id="io.ionic.wkhajana" version="1.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Video status downloader</name>
+    <description>status khazana</description>
     <author email="rendezvous.nisarg@gmail.com" href="http://ionicframework.com/">Rendezvous Labs</author>
     <content src="index.html" />
     <access origin="*" />
@@ -14,8 +14,11 @@
     <preference name="ScrollEnabled" value="false" />
     <preference name="android-minSdkVersion" value="18" />
     <preference name="BackupWebStorage" value="none" />
+    <preference name="webviewbounce" value="false" />
+    <preference name="UIWebViewBounce" value="false" />
+    <preference name="AutoHideSplashScreen" value="false" />
     <preference name="SplashMaintainAspectRatio" value="true" />
-    <preference name="SplashScreenDelay" value="4000" />
+    <preference name="SplashScreenDelay" value="3000" />
     <preference name="FadeSplashScreenDuration" value="200" />
     <preference name="SplashShowOnlyFirstTime" value="false" />
     <preference name="SplashScreen" value="screen" />
